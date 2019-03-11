@@ -1,7 +1,8 @@
-from scripts import neural_net
+from scripts import neural_net, io
 import numpy as np
-# adding a test function to make sure I get a distance of 0 for self
 
+# testing that training the neural net on the identity matrix will retrun
+#the identity matrix
 def test_NN():
     X = np.identity(8)
     y = X
@@ -9,3 +10,10 @@ def test_NN():
     nn.train(X, y)
     out = np.round(nn.output)
     assert np.array_equiv(out, X)
+
+# testing that the sequence to binary function is correctly converting the sequences
+def test_translation():
+    testseq = 'TGGCAT'
+    x = io.seq_to_binary(testseq)
+    assert np.array_equiv(x, [0., 1., 0., 0., 0., 0., 0., 1., 0., 0., 0., 1., 0., 0., 1., 0., 1.,
+       0., 0., 0., 0., 1., 0., 0.])

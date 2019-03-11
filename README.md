@@ -1,12 +1,12 @@
 # HW2 Skeleton
 
 [![Build
-Status](https://travis-ci.org/callamartyn/cmartyn_HW3)](https://travis-ci.org/callamartyn/cmartyn_HW3)
+Status](https://github.com/callamartyn/bmi203_final)](https://github.com/callamartyn/bmi203_final)
 
 ## structure
 
-SW.py contains all of the relevant functions I used to solve Part 1 of the homework.
-optimize.py contains my optimization function.
+neural_net.py contains the neural net class
+
 
 
 ## usage
@@ -18,11 +18,11 @@ conda install --yes --file requirements.txt
 ```
 
 to install all the dependencies in `requirements.txt`. Then the package's
-main function (located in `hw3skeleton/__main__.py`) can be run as
+main function (located in `scripts/__main__.py`) can be run as
 follows
 
 ```
-python -m hw2skeleton -P data
+python -m scripts 
 ```
 
 ## testing
