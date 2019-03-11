@@ -1,7 +1,7 @@
 # HW2 Skeleton
 
 [![Build
-Status](https://github.com/callamartyn/bmi203_final)](https://github.com/callamartyn/bmi203_final)
+Status](https://travis-ci.org/callamartyn/bmi203_final)](hhttps://travis-ci.org/callamartyn/bmi203_final)
 
 ## structure
 
@@ -22,7 +22,7 @@ main function (located in `scripts/__main__.py`) can be run as
 follows
 
 ```
-python -m scripts 
+python -m scripts
 ```
 
 ## testing
