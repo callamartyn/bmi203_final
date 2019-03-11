@@ -1,4 +1,4 @@
-# HW2 Skeleton
+# Final Project
 
 [![Build
 Status](https://travis-ci.org/callamartyn/bmi203_final)](hhttps://travis-ci.org/callamartyn/bmi203_final)
