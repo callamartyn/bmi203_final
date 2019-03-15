@@ -99,7 +99,7 @@ plt.title("Varying_Iterations")
 plt.plot(iterations, m_errors, label = 'model')
 plt.plot(iterations, v_errors, label = 'validation_set')
 plt.legend()
-fig1.savefig('testing_iterations.png')
+fig1.savefig('./outputs/testing_iterations.png')
 plt.cla()
 
 
@@ -146,7 +146,7 @@ cmap = sns.cm.rocket_r
 # plot dataframe as heatmap
 hm = sns.heatmap(paramErrors, annot=True,vmin = .03, vmax = .3, cmap = cmap)
 fig = hm.get_figure()
-fig.savefig('params_heatmap.png')
+fig.savefig('./outputs/params_heatmap.png')
 
 print('testing held out data with best parameters...')
 # train all folds together  w/ best parameters from heatmap
@@ -168,4 +168,4 @@ nn.train(x, y)
 predicted_sites = nn.predict(testBin)
 # combine predictions with sequences and write to txt
 predictions = pd.DataFrame(list(zip(testSeqs, predicted_sites)))
-predictions.to_csv('cmartyn_predictions.txt', sep = '\t', header= False, index = False)
+predictions.to_csv('./outputs/cmartyn_predictions.txt', sep = '\t', header= False, index = False)
