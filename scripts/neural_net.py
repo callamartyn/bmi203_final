@@ -54,7 +54,7 @@ class NeuralNetwork:
             for i in range(1000):
                 self.feedforward()
                 self.backprop()
-                if self.error < 0.02:
+                if self.error < 0.01:
                     break
         # otherwise iterate for specified number of cycles
         else:
@@ -74,6 +74,7 @@ class NeuralNetwork:
             return self.output, error
 
 
+# Ended up not needing functions below (for bagging), replaced with sklearn KFold
 # this function will randomly split the data and labels into a training and testing set
 def split_predict(X, y, nodes, lr, cycles = False):
     # split the datat into 70% training and 30% testing

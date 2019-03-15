@@ -19,6 +19,8 @@ def test_translation():
     assert np.array_equiv(x, [0., 1., 0., 0., 0., 0., 0., 1., 0., 0., 0., 1., 0., 0., 1., 0., 1.,
        0., 0., 0., 0., 1., 0., 0.])
 
+# testing the the downsample function returns a list of the right size,
+# and that the elements of that list were in the original list
 def test_downsample():
     l = [random.sample(range(100), 10) for x in range(20)]
     d = io.downsample(l, 6, 4)

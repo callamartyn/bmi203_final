@@ -6,6 +6,7 @@ from matplotlib import pyplot as plt
 import pandas as pd
 import seaborn as sns
 from sklearn.model_selection import train_test_split, KFold
+from sklearn import metrics
 
 """First I will use the neural net to solve the 8x3x8 autoendcoder problem"""
 # running the neural net on the identity matrix
@@ -68,23 +69,27 @@ y = y.reshape(len(y),1)
 """first I will look at how my model error and validation error change with
 increasing number of iterations"""
 xtrain, holdoutx, ytrain, holdouty = train_test_split(x, y, test_size=0.1)
-print('Testing number of iterations')
+print('Testing number of iterations...')
 iterations = [1, 10, 100, 1000, 10000]
 m_errors = []
 v_errors = []
-kf = KFold(n_splits=10, shuffle = True)
-for i in iterations:
-        m = []
-        v = []
+kf = KFold(n_splits=5, shuffle = True)
+for i in iterations: # loop through iterations
+        m = [] # store the error of the model
+        v = [] # store the error of the validation set
         for train_index, test_index in kf.split(xtrain):
+            # use indices generate training and testing sets for each fold
             xr, xv = xtrain[train_index], xtrain[test_index]
             yr, yv = ytrain[train_index], ytrain[test_index]
+            # generate neural network with best guess parameters
             nn = NN.NeuralNetwork(np.array(xr), np.array(yr), 10, .01)
+            # train with different number of iterations and store the error
             nn.train(np.array(xr), np.array(yr), iterations = i)
             m.append(nn.error)
             v.append(nn.predict(np.array(xv), y = np.array(yv))[1])
         v_errors.append(np.mean(v))
         m_errors.append(np.mean(m))
+
 #plotting errors vs. iterations
 fig1 = plt.figure(dpi = 100)
 plt.xscale("log")
@@ -97,56 +102,70 @@ plt.legend()
 fig1.savefig('testing_iterations.png')
 plt.cla()
 
+
 print('Lowest validation error is %s' %min(v_errors))
 print('Corresponding model error is %s'%m_errors[v_errors.index(min(v_errors))])
-
 # confirm that the error is not due to overfitting by testing the holdout data
 nn = NN.NeuralNetwork(np.array(xtrain), np.array(ytrain), 10, .001)
 nn.train(np.array(xtrain), np.array(ytrain), iterations = 100)
 prediction, error = nn.predict(np.array(holdoutx), np.array(holdouty))
+print('Holdout error is %s' %error)
+
+"""Now I want to loop through several different learning rates and hidden
+layer size to figure out the best combination of parameters"""
 
 print('testing learning parameters...')
-#hold out data
+
 learning_rate = [.0001, .00025, .0005, .001, .005, .01, .05, .1, .15]
 nodes = [2, 4, 6, 8, 10, 12, 18, 30, 60, 68]
+# make empty dataframe to store results
 paramErrors = pd.DataFrame(index = nodes, columns = learning_rate)
-# make empty matrix
-paramErrors = pd.DataFrame(index = nodes, columns = learning_rate)
-kf = KFold(n_splits=10, shuffle = True)
-for n in nodes:
-    for l in learning_rate:
-        validation_error = []
+# hold out 10% of the data, trian and test on 90%
+xtrain, holdoutx, ytrain, holdouty = train_test_split(x, y, test_size=0.1)
+# generate indices for the folds, I will do 5-fold since we only have about 500 observations
+kf = KFold(n_splits=5, shuffle = True)
+for n in nodes: # loop through hidden layer size
+    for l in learning_rate: # loop through learning rates
+        validation_error = [] # keep track of the average error for each combination
         for train_index, test_index in kf.split(xtrain):
+            # use indices generate training and testing sets for each fold
             xr, xv = xtrain[train_index], xtrain[test_index]
             yr, yv = ytrain[train_index], ytrain[test_index]
+            # generate NN and train on training set
             nn = NN.NeuralNetwork(np.array(xr), np.array(yr), n, l)
             nn.train(np.array(xr), np.array(yr), iterations = 1000)
+            # predict values for test set (fold)
             error = nn.predict(np.array(xv), y = np.array(yv))[1]
-            validation_error.append(error)
-        paramErrors.loc[n, l] = np.mean(validation_error)
+            validation_error.append(error) # average errors across folds
+        paramErrors.loc[n, l] = np.mean(validation_error) # store error in dataframe
 
 print('plotting parameters tested...')
+# fix dataframe so it will plot
 paramErrors = paramErrors[paramErrors.columns].astype(float)
-plt.xscale("linear")
 cmap = sns.cm.rocket_r
+# plot dataframe as heatmap
 hm = sns.heatmap(paramErrors, annot=True,vmin = .03, vmax = .3, cmap = cmap)
 fig = hm.get_figure()
 fig.savefig('params_heatmap.png')
 
 print('testing held out data with best parameters...')
-# train all but held out w/ best parameters
-nn = NN.NeuralNetwork(np.array(xtrain), np.array(ytrain), 12, .01)
+# train all folds together  w/ best parameters from heatmap
+nn = NN.NeuralNetwork(np.array(xtrain), np.array(ytrain), 12, .001)
 nn.train(np.array(xtrain), np.array(ytrain))
+# predict on the 10% of data that was held out
 prediction, error = nn.predict(np.array(holdoutx), np.array(holdouty))
-
 print('Error for holdout data is %s' %error)
-from sklearn import metrics
+
+# evaluate AUC for holdout data
 fpr, tpr, thresholds = metrics.roc_curve(holdouty, prediction)
 auc = metrics.auc(fpr, tpr)
-print('AUC for hold data is %s' %auc)
+print('AUC for holdout data is %s' %auc)
 
-nn=NN.NeuralNetwork(x, y, 23, .01)
+# now train a neural net on all of the available data
+nn=NN.NeuralNetwork(x, y, 12, .001)
 nn.train(x, y)
+# make predictions for the test sequences
 predicted_sites = nn.predict(testBin)
+# combine predictions with sequences and write to txt
 predictions = pd.DataFrame(list(zip(testSeqs, predicted_sites)))
 predictions.to_csv('cmartyn_predictions.txt', sep = '\t', header= False, index = False)
