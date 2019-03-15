@@ -37,8 +37,8 @@ def downsample(sample_list, number_obs, len_obs):
     shortlist = []
     for i in x:
         #print(sample_list[i])
-        start = random.randint(0,len(sample_list[i])-17)
-        stop = start + 17
+        start = random.randint(0,len(sample_list[i])-len_obs)
+        stop = start + len_obs
         substr = sample_list[i][start:stop]
         shortlist.append(substr)
     return shortlist

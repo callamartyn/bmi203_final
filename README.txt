@@ -1,0 +1,1 @@
+TCGA-PAAD has the data used to generate the clinical comparison analysis. The count tables were obtained from https://portal.gdc.cancer.gov/projects/TCGA-PAAD.sc_signatures contains the gene fold changes that are imported in the clinical analysis R script

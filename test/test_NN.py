@@ -1,5 +1,6 @@
 from scripts import neural_net, io
 import numpy as np
+import random
 
 # testing that training the neural net on the identity matrix will retrun
 #the identity matrix
@@ -18,6 +19,8 @@ def test_translation():
     assert np.array_equiv(x, [0., 1., 0., 0., 0., 0., 0., 1., 0., 0., 0., 1., 0., 0., 1., 0., 1.,
        0., 0., 0., 0., 1., 0., 0.])
 
-dir = 'data/'
-d = dir + 'rap1-lieb-positives.txt'
-io.read_txt(d)
+def test_downsample():
+    l = [random.sample(range(100), 10) for x in range(20)]
+    d = io.downsample(l, 6, 4)
+    assert len(d) == 6
+    assert [any(x in sl for sl in l) for x in d[0]]
