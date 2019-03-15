@@ -117,7 +117,7 @@ layer size to figure out the best combination of parameters"""
 print('testing learning parameters...')
 
 learning_rate = [.0001, .00025, .0005, .001, .005, .01, .05, .1, .15]
-nodes = [2, 4, 6, 8, 10, 12, 18, 30, 60, 68]
+nodes = [2, 4, 6, 8, 10, 12, 18, 30, 60]
 # make empty dataframe to store results
 paramErrors = pd.DataFrame(index = nodes, columns = learning_rate)
 # hold out 10% of the data, trian and test on 90%

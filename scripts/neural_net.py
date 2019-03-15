@@ -32,8 +32,10 @@ class NeuralNetwork:
 
     def backprop(self):
         self.error = ((self.output - self.y)**2).mean()
-        # application of the chain rule to find derivative of the loss function with respect to the weights
+        # take derivative of loss function by applying chain rule
+        # propagate error from output to hidden layer
         d_theta2 = np.dot(self.hidden_layer.T, (2*(self.y - self.output) * sigmoid_derivative(self.output)))
+        # propagate error from hidden layer to input layer
         d_theta1 = np.dot(self.input.T,  (np.dot(2*(self.y - self.output) * sigmoid_derivative(self.output), self.theta2.T) * sigmoid_derivative(self.hidden_layer)))
 
         # update the weights with the derivative of the loss function, multiply by the
