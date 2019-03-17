@@ -165,7 +165,7 @@ print('AUC for holdout data is %s' %auc)
 nn=NN.NeuralNetwork(x, y, 12, .001)
 nn.train(x, y)
 # make predictions for the test sequences
-predicted_sites = nn.predict(testBin)
+predicted_sites = nn.predict(testBin).flatten()
 # combine predictions with sequences and write to txt
 predictions = pd.DataFrame(list(zip(testSeqs, predicted_sites)))
 predictions.to_csv('./outputs/cmartyn_predictions.txt', sep = '\t', header= False, index = False)
